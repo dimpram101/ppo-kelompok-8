@@ -1,7 +1,7 @@
-import math
+from numpy import log as ln
 
 def f(x):
-  return (4 * math.log(x) - x)
+  return 4 * ln(x) - x
 
 def df(x):
   return (4/x) - 1
@@ -19,13 +19,13 @@ class NewtonMethod:
 
   def solve(self):
     print(f"x0 = {self.x}")
-    print(f"f(x) = {f(self.x)}")
     line()  
     for i in range(0, self.n):
       self.x = self.x - (df(self.x)/ddf(self.x))
       print(f"x{i+1} = {self.x}")
-      print(f"f(x) = {f(self.x)}")
+      # print(f"f(x) = {f(self.x)}")
       line()
+    print(f"f(x) = {f(self.x)}")
 
 print("Newton : ")
 newton = NewtonMethod(6, 3)
@@ -42,9 +42,9 @@ class SteepestDescent:
     print(f"f(x) = {f(self.x)}")
     line()
     for i in range(0, self.n):
-      self.x = self.x - self.t * df(self.x)
+      self.x = self.x + (self.t * df(self.x))
       print(f"x{i+1} = {self.x}")
-      print(f"f(x) = {f(self.x)}")
+      # print(f"f(x) = {f(self.x)}")
       line()
 
 print("\nSteepest Descent : ")
@@ -70,21 +70,24 @@ class PSO:
   #Step 2
   def determineFxi(self):
     self.fxi = [f(x) for x in self.x]
+    # for i in range(len(self.x)) :
+    #   self.fxi.append(f(self.x[i]))
+    #   print(self.fxi[i])
     
   #step 3
   def determineGBest(self):
     self.gBest = self.x[self.fxi.index(max(self.fxi))]
 
   #Step 4
+  def determinePBestIter1(self):
+    self.pBest = [x for x in self.x]
+    
   def determinePBest(self):
-    if self.pBest == []:
-      self.pBest = [x for x in self.x]
-    else:
-      for i in range(len(self.x)):
-        if f(self.x[i]) >= f(self.oldX[i]):
-          self.pBest[i] = self.x[i]
-        else:
-          self.pBest[i] = self.oldX[i]
+    for i in range(len(self.x)):
+      if f(self.x[i]) > f(self.oldX[i]):
+        self.pBest[i] = self.x[i]
+      else:
+        self.pBest[i] = self.oldX[i]
   
   #Step 5
   def updateV(self):
@@ -93,8 +96,9 @@ class PSO:
 
   #Step 6
   def updateX(self):
+    for j in range(len(self.oldX)):
+      self.oldX[j] = self.x[j]
     for i in range(len(self.x)):
-      self.oldX[i] = self.x[i]
       self.x[i] = self.x[i] + self.v1[i]
 
   def solve(self):
@@ -103,8 +107,10 @@ class PSO:
         print(f"{i+1}=======================================================")
         self.determineFxi()
         self.determineGBest()
-        self.determinePBest()
+        self.determinePBestIter1() if i == 0 else self.determinePBest()
         self.updateV()
+        
+        # print(f"v : {self.v1}")
         self.updateX()
         print(f"x : {self.x}")
     except ZeroDivisionError:
