@@ -21,7 +21,8 @@ class NewtonMethod:
     print(f"x0 = {self.x}")
     line()  
     for i in range(0, self.n):
-      self.x = self.x - (df(self.x)/ddf(self.x))
+      #memperbaharui nilai x dengan menggunakan rumus xi - f'(x)/f''(x)
+      self.x = self.x - (df(self.x)/ddf(self.x)) 
       print(f"x{i+1} = {self.x}")
       # print(f"f(x) = {f(self.x)}")
       line()
@@ -42,6 +43,7 @@ class SteepestDescent:
     print(f"f(x) = {f(self.x)}")
     line()
     for i in range(0, self.n):
+      # Memperbaharui nilai x dengan menggunakan rumus x = xi + (t * f'(x))
       self.x = self.x + (self.t * df(self.x))
       print(f"x{i+1} = {self.x}")
       # print(f"f(x) = {f(self.x)}")
@@ -67,34 +69,34 @@ class PSO:
     self.v1 = [0,0,0]
     self.oldX = [0,0,0]
     
-  #Step 2
+  #Step 2 menentukan F(xi)
   def determineFxi(self):
     self.fxi = [f(x) for x in self.x]
     # for i in range(len(self.x)) :
     #   self.fxi.append(f(self.x[i]))
     #   print(self.fxi[i])
     
-  #step 3
+  #step 3 Menentukan Gbest
   def determineGBest(self):
     self.gBest = self.x[self.fxi.index(max(self.fxi))]
 
-  #Step 4
-  def determinePBestIter1(self):
-    self.pBest = [x for x in self.x]
-    
+  #Step 4 Menentukan PBest 
   def determinePBest(self):
-    for i in range(len(self.x)):
-      if f(self.x[i]) > f(self.oldX[i]):
-        self.pBest[i] = self.x[i]
-      else:
-        self.pBest[i] = self.oldX[i]
+    if self.pBest == []: #untuk iterasi 1
+      self.pBest = [x for x in self.x]
+    else: #untuk iterasi selanjutnya
+      for i in range(len(self.x)):
+        if f(self.x[i]) > f(self.oldX[i]):
+          self.pBest[i] = self.x[i]
+        else:
+          self.pBest[i] = self.oldX[i]
   
-  #Step 5
+  #Step 5 Memperbaharui nilai v
   def updateV(self):
     for i in range(len(self.v1)):
       self.v1[i] = (self.w * self.v1[i]) + (self.c[0]*self.r[0]*(self.pBest[i] - self.x[i])) + (self.c[1]*self.r[1]*(self.gBest - self.x[i]))
 
-  #Step 6
+  #Step 6 Memperbaharui nilai x
   def updateX(self):
     for j in range(len(self.oldX)):
       self.oldX[j] = self.x[j]
@@ -107,7 +109,7 @@ class PSO:
         print(f"{i+1}=======================================================")
         self.determineFxi()
         self.determineGBest()
-        self.determinePBestIter1() if i == 0 else self.determinePBest()
+        self.determinePBest()
         self.updateV()
         
         # print(f"v : {self.v1}")
