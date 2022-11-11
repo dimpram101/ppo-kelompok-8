@@ -63,19 +63,15 @@ class NewtonMethod:
     for i in range(self.n):
       print("==========================================")
       self.determineXyVector()
-      print(self.xyvector)
       self.determineDf()
-      print(self.Df)
       self.determineH()
-      print(self.H)
-      print(self.inversH)
       self.determineNewVector()
 
       print(f"x{(i+1)} = ({self.x},{self.y})")
     print(f"f(x) = {f(self.x,self.y)}")
 
 print("Newton : ")
-newton = NewtonMethod(5,5,8)
+newton = NewtonMethod(5,5,10)
 newton.solve()
 
 
