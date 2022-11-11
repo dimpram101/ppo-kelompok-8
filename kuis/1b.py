@@ -22,4 +22,4 @@ class SteepestDescent:
     print(f"f(x) = {f(self.x)}")
 
 steepest = SteepestDescent(1,1/4)
-steepest.solve(10)
+steepest.solve(100)

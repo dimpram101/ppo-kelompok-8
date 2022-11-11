@@ -1,4 +1,5 @@
 from math import sqrt
+from numpy import random
 
 def f(x):
   return 1/3*sqrt(x**2 + 25)
@@ -21,8 +22,8 @@ class PSO:
     self.gBest = 0
     self.pBest = []
     self.fxi = []
-    self.v1 = [0,0,0]
-    self.oldX = [0,0,0]
+    self.v1 = [0,0,0,0,0,0,0,0,0,0]
+    self.oldX = [0,0,0,0,0,0,0,0,0,0]
     
   #Step 2 menentukan F(xi)
   def determineFxi(self):
@@ -67,6 +68,8 @@ class PSO:
       print(f"x{i+1} : {self.x}")
     # print(f"f(x) = {f(self.x)}")
 
+x = [random.randint(0,10) for i in range(10)]
+print(x)
 print("PSO :")
-pso = PSO([-1, 1.5, 2], 0, [1/2, 1], [1/2, 1/2], 1)
-pso.solve(3)
+pso = PSO(x, 0, [1/2, 1], [1/2, 1/2], 1)
+pso.solve(10)

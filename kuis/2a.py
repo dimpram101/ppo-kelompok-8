@@ -63,4 +63,4 @@ class NewtonMethod:
 
 print("Newton : ")
 newton = NewtonMethod(1,1)
-newton.solve(100)
+newton.solve(3)
