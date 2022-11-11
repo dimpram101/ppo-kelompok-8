@@ -19,17 +19,16 @@ class NewtonMethod:
 
   def solve(self):
     print(f"x0 = {self.x}")
-    line()  
+    print(f"f(x) = {f(self.x)}")
     for i in range(0, self.n):
+      line()  
       #memperbaharui nilai x dengan menggunakan rumus xi - f'(x)/f''(x)
       self.x = self.x - (df(self.x)/ddf(self.x)) 
       print(f"x{i+1} = {self.x}")
-      # print(f"f(x) = {f(self.x)}")
-      line()
     print(f"f(x) = {f(self.x)}")
 
 print("Newton : ")
-newton = NewtonMethod(6, 3)
+newton = NewtonMethod(6, 10)
 newton.solve()
 
 class SteepestDescent:
@@ -41,16 +40,15 @@ class SteepestDescent:
   def solve(self):
     print(f"x0 = {self.x}")
     print(f"f(x) = {f(self.x)}")
-    line()
     for i in range(0, self.n):
+      line()
       # Memperbaharui nilai x dengan menggunakan rumus x = xi + (t * f'(x))
       self.x = self.x + (self.t * df(self.x))
       print(f"x{i+1} = {self.x}")
-      # print(f"f(x) = {f(self.x)}")
-      line()
+    print(f"f(x) = {f(self.x)}")
 
 print("\nSteepest Descent : ")
-steepest = SteepestDescent(6, 1/2, 3)
+steepest = SteepestDescent(6, 1/2, 50)
 steepest.solve()
 
 class PSO:
@@ -72,9 +70,6 @@ class PSO:
   #Step 2 menentukan F(xi)
   def determineFxi(self):
     self.fxi = [f(x) for x in self.x]
-    # for i in range(len(self.x)) :
-    #   self.fxi.append(f(self.x[i]))
-    #   print(self.fxi[i])
     
   #step 3 Menentukan Gbest
   def determineGBest(self):
@@ -104,20 +99,18 @@ class PSO:
       self.x[i] = self.x[i] + self.v1[i]
 
   def solve(self):
-    try:
-      for i in range(self.n):
-        print(f"{i+1}=======================================================")
-        self.determineFxi()
-        self.determineGBest()
-        self.determinePBest()
-        self.updateV()
-        
-        # print(f"v : {self.v1}")
-        self.updateX()
-        print(f"x : {self.x}")
-    except ZeroDivisionError:
-      print("Pembagian nol di iterasi :", i)
+    print(f"x : {self.x}")
+    print(f"f(x) = {f(self.x)}")
+    for i in range(self.n):
+      print(f"{i+1}=======================================================")
+      self.determineFxi()
+      self.determineGBest()
+      self.determinePBest()
+      self.updateV()
+      self.updateX()
+      print(f"x : {self.x}")
+    print(f"f(x) = {f(self.x)}")
 
 print("\nPSO : ")
-pso = PSO([1,2,6], 0, [1/2, 1], [1,1], 1, 3)
+pso = PSO([1,2,6], 0, [1/2, 1], [1,1], 1, 10)
 pso.solve()

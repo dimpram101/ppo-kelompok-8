@@ -58,29 +58,53 @@ class NewtonMethod:
     self.y = vctN[1, 0]
 
   def solve(self):
+    print(f"x0 = ({self.x},{self.y})")
+    print(f"f(x) = {f(self.x, self.y)}")
     for i in range(self.n):
+      print("==========================================")
       self.determineXyVector()
+      print(self.xyvector)
       self.determineDf()
+      print(self.Df)
       self.determineH()
+      print(self.H)
+      print(self.inversH)
       self.determineNewVector()
 
       print(f"x{(i+1)} = ({self.x},{self.y})")
-    print(f"Nilai maksimum = {f(self.x,self.y)}")
+    print(f"f(x) = {f(self.x,self.y)}")
 
-# newton = NewtonMethod(5,5,3)
-# newton.solve()
+print("Newton : ")
+newton = NewtonMethod(5,5,8)
+newton.solve()
 
 
 class SteepestDescent:
-  def __init__(self, x, y, t, n):
+  def __init__(self, x, y, n):
     self.x = x
     self.y = y
-    self.t = t
+    # self.t = t
     self.n = n
 
-  def solve():
-    pass
+  def determineT(self, vector, gradientMatrix):
+    symbolizeX = lambda t : vector[0,0] - gradientMatrix[0,0] * t
+    symbolizeY = lambda t : vector[1,0] - gradientMatrix[0,0] * t
+    
+    matGrad = matrix([[f_dx(symbolizeX,symbolizeY)], [f_dy(symbolizeX, symbolizeY)]])
 
+    return matGrad
+
+  def solve(self):
+    for i in range(self.n):
+      xVector = matrix([[self.x], [self.y]])
+      gradientMatrix = matrix([[f_dx(self.x,self.y)], [f_dy(self.x, self.y)]])
+      newXVector = xVector - self.determineT(xVector, gradientMatrix) * gradientMatrix
+      x = newXVector[0,0]
+      y = newXVector[1,0]
+      print(f"x{i+1} = ({self.x}, {self.y})")
+
+# steepest = SteepestDescent(5,5,3)
+# steepest.solve()
 
 class PSO:
   def __init__(self, x, y, vX, vY, c, r, w, n):
@@ -180,6 +204,6 @@ class PSO:
       for i in range(len(self.x)):
         print(f"(x, y) = ({self.x[i]}, {self.y[i]})")
 
-
-pso = PSO([1, 3, -2, 5], [-1, 0, 2, 5], [0], [0], [1, 0.5], [1, 1], 1, 3)
-pso.solve()
+# print("PSO : ")
+# pso = PSO([1, 3, -2, 5], [-1, 0, 2, 5], [0], [0], [1, 0.5], [1, 1], 1, 10)
+# pso.solve()
