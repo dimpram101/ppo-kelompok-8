@@ -53,10 +53,10 @@ class SteepestDescent:
       print("======================")
       self.determineXYVector()
       self.determineDf()
-      self.determineT()
       self.updateXY()        
+      self.determineT()
       print(f"x{i+1} : ({self.x},{self.y})")
       print(f"f(x) : {f(self.x, self.y)}")
 
-std = SteepestDescent(1,1, None)
+std = SteepestDescent(1,1, 1/4)
 std.solve(3)

@@ -36,14 +36,14 @@ class NewtonMethod:
 
   def determineDf(self):
     self.Df = matrix([[f_dx(self.x, self.y)], [f_dy(self.x, self.y)]])
-    print(f"Df = \n {self.Df}")
+    # print(f"Df = \n {self.Df}")
 
   def determineH(self):
     self.H = matrix([[f_dx_dx(self.x, self.y), f_dx_dy(self.x, self.y)],
                       [f_dy_dx(self.x, self.y), f_dy_dy(self.x, self.y)]])
     self.inversH = linalg.inv(self.H)
-    print(f"H = \n{self.H}")
-    print(f"H^-1 = \n{self.inversH}")
+    # print(f"H = \n{self.H}")
+    # print(f"H^-1 = \n{self.inversH}")
 
 
   def determineNewVector(self):
@@ -65,6 +65,6 @@ class NewtonMethod:
       print(f"x{(i+1)} = ({self.x},{self.y})")
       print(f"f(x) = {f(self.x,self.y)}")
 
-print("Newton : ")
+print("Newton 2 variabel: ")
 newton = NewtonMethod(1,1)
 newton.solve(3)

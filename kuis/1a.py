@@ -24,7 +24,7 @@ class NewtonMethod:
 
 
 nomor1a = NewtonMethod(1)
-nomor1a.solve(100)
+nomor1a.solve(3)
 
 # print(df(-0.4))
 # print(ddf(-0.4))
