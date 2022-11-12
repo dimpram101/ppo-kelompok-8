@@ -25,11 +25,14 @@ class PSO:
   #Step 2 menentukan F(xi)
   def determineFxi(self):
     self.fxi = [f(self.x[i], self.y[i]) for i in range(len(self.x))]
+    # print(f"fxi : \n{self.fxi}")
     
   #step 3 Menentukan Gbest
   def determineGBest(self):
     self.gBest = self.x[self.fxi.index(min(self.fxi))]
     self.gBestY = self.y[self.fxi.index(min(self.fxi))]
+    # print(f"gBestX : {self.gBest}")
+    # print(f"gBestY : {self.gBestY}")
 
   #Step 4 Menentukan PBest 
   def determinePBest(self):
@@ -44,6 +47,8 @@ class PSO:
         else:
           self.pBest[i] = self.oldX[i]
           self.pBestY[i] = self.oldY[i]
+    # print(f"pBestX : \n{self.pBest}")
+    # print(f"pBestY : \n{self.pBestY}")
        
   
   #Step 5 Memperbaharui nilai v
@@ -51,6 +56,8 @@ class PSO:
     for i in range(len(self.v1)):
       self.v1[i] = (self.w * self.v1[i]) + (self.c[0]*self.r[0]*(self.pBest[i] - self.x[i])) + (self.c[1]*self.r[1]*(self.gBest - self.x[i]))
       self.v1y[i] = (self.w * self.v1y[i]) + (self.c[0]*self.r[0]*(self.pBest[i] - self.y[i])) + (self.c[1]*self.r[1]*(self.gBest - self.y[i]))
+    # print(f"v1x : \n{self.v1}")
+    # print(f"v1y : \n{self.v1y}")
 
   #Step 6 Memperbaharui nilai x
   def updateX(self):
@@ -68,17 +75,17 @@ class PSO:
       if j == len(self.x) - 1:
         print()
     for i in range(n):
-      # print(f"=======================================================")
+      print(f"=======================================================")
       self.determineFxi()
       self.determineGBest()
       self.determinePBest()
       self.updateV()
       self.updateX()
-      print(f"x{i} : ", end="")
+      print(f"x{i+1} : ", end="")
       for p in range(len(self.x)):
-        print(f"{self.x[p], self.y[p]},", end="")
+        print(f"{self.x[p], self.y[p]}", end="")
         if p == len(self.x) - 1:
           print()
 
 pso = PSO([1, 1, 0], [1, -1, 0], 0, [1, 1/2], [1, 1], 1)
-pso.solve(100)
+pso.solve(3)

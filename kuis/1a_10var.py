@@ -1,4 +1,5 @@
 from math import sqrt
+from numpy import random
 
 def f(x):
   return 1/3*sqrt(x**2 + 25)
@@ -15,16 +16,20 @@ class NewtonMethod:
 
   def solve(self, n):
     print(f"x0 = {self.x}")
-    print(f"f(x) = {f(self.x)}")
+    for h in range(len(self.x)):
+      print(f"f(x) = {f(self.x[h])}")
     for i in range(n):
       print("=============================")
-      self.x = self.x - (df(self.x)/ddf(self.x))
+      for j in range(len(self.x)):
+        self.x[j] = self.x[j] - (df(self.x[j])/ddf(self.x[j]))
       print(f"x{i+1} = {self.x}")
-      print(f"f(x) = {f(self.x)}")
+      for k in range(len(self.x)):
+        print(f"f(x{k+1}) = {f(self.x[k])}")
 
 
-nomor1a = NewtonMethod(1)
-nomor1a.solve(100)
+x = [random.randint(-5, 5) for i in range(10)]
+nomor1a = NewtonMethod(x)
+nomor1a.solve(10)
 
 # print(df(-0.4))
 # print(ddf(-0.4))

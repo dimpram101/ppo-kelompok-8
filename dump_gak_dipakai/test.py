@@ -1,39 +1,63 @@
-def list_to_poly(coef_list): 
-    poly_list = [] 
-    if not coef_list or coef_list==[0]: 
-        poly_list.append('0') 
-    if len(coef_list)>=1 and coef_list[0]: 
-        poly_list.append(f'{coef_list[0]}') 
-    if len(coef_list)>=2 and coef_list[1]: 
-        poly_list.append(f'{coef_list[1] if coef_list[1]!=1 else ""}x') 
-    poly_list.extend([f'{i if i!=1 else ""}x^{j+2}' for j,i in enumerate(coef_list[2:]) if i]) 
-    return ' + '.join(poly_list) 
+from numpy import matrix, linalg
+import sympy as sp
 
-def poly_to_list(string): 
-    terms     = string.split(' + ') 
-    poly_list = [] 
-    for term in terms: 
-        if 'x^' not in term: 
-            if 'x' not in term: 
-                poly_list.append(int(term)) 
-            else: 
-                linear_coef = term.split('x')[0] 
-                print(f"linear coef = {linear_coef}")
-                poly_list.append(int(linear_coef) if linear_coef else 1) 
-        else: 
-            coef,exp = term.split('x^') 
-            print(f"({coef}, {exp})")
-            for i in range(len(poly_list),int(exp)): 
-                poly_list.append(0) 
-            poly_list.append(int(coef) if coef else 1) 
-    return poly_list 
+def f(x,y):
+  return (100*((y-0.01*x**2)**(1/2)))
 
-def derivative(string): 
-    poly_list  = poly_to_list(string) 
-    derivative = [i*j for i,j in enumerate(poly_list)][1:] 
-    d_string   = list_to_poly(derivative) 
-    return d_string 
+def f_dx(x,y):
+  return (-10*x)/((100*y-x**2)**(1/2))
 
-# print(derivative('0'))
-# print(derivative('3 + 5x'))
-print(derivative('3 + x^5 + -3x^7'))
+def f_dy(x,y):
+  return (500)/((100*y-x**2)**(1/2))
+
+class SteepestDescent:
+  def __init__(self, x, y, t):
+    self.x = x
+    self.y = y
+    self.t = t
+
+    self.xyVector = None
+    self.Df = None
+
+  def determineXYVector(self):
+    self.xyVector = matrix([[self.x], [self.y]])
+
+  def determineDf(self):
+    self.Df = matrix([[f_dx(self.x, self.y)], [f_dy(self.x, self.y)]])
+  
+  def updateXY(self):
+    newXYVector = self.xyVector - self.t * self.Df
+    self.x = newXYVector[0,0]
+    self.y = newXYVector[1,0]
+
+  def determineT(self):
+    t = sp.Symbol("t")
+    
+    xyVector = matrix([[self.x], [self.y]])
+    df = matrix([[f_dx(self.x, self.y)], [f_dy(self.x, self.y)]])
+    formula = xyVector - t * df
+    tMatrix = matrix([[f_dx(formula[0,0], formula[1,0])], [f_dy(formula[0,0], formula[1,0])]])
+
+    disambiguation = (-tMatrix[0,0]) * df[0,0] + (-tMatrix[1,0]) * df[1,0]
+
+    newT = float(sp.solveset(disambiguation, t).args[0])
+    self.t = newT
+    
+    print(f"t = {self.t}")
+    return newT
+
+  def solve(self, n):
+
+    print(f"x0 : ({self.x},{self.y})")
+    for i in range(n):
+      print("======================")
+      self.determineXYVector()
+      self.determineDf()
+      self.updateXY()        
+      # self.determineT()
+      print(f"x{i+1} : ({self.x},{self.y})")
+      print(f"f(x) : {f(self.x, self.y)}")
+
+
+std = SteepestDescent(1,1, 0.25)
+std.solve(3)

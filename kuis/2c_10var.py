@@ -61,27 +61,32 @@ class PSO:
       self.x[i] = self.x[i] + self.v1[i]
       self.y[i] = self.y[i] + self.v1y[i]
 
+  def showXandFx(self):
+    xy = [(self.x[i], self.y[i]) for i in range(len(self.x))]
+    print(f"(x,y) = {xy}")
+    fx = [f(self.x[i], self.y[i]) for i in range(len(self.x))]
+    print(f"f(x,y) = {fx}")
+      
+
   def solve(self, n):
+    print(f"r : {self.r}")
     print(f"x0 : ", end="")
     for j in range(len(self.x)):
       print(f"{self.x[j], self.y[j]}", end="")
       if j == len(self.x) - 1:
         print()
     for i in range(n):
-      # print(f"=======================================================")
+      print(f"=======================================================")
       self.determineFxi()
       self.determineGBest()
       self.determinePBest()
       self.updateV()
       self.updateX()
-      print(f"x{i+1} : ", end="")
-      for p in range(len(self.x)):
-        print(f"{self.x[p], self.y[p]},", end="")
-        if p == len(self.x) - 1:
-          print()
+      
+      self.showXandFx()
 
 x = [random.randint(0,10) for i in range(10)]
 y = [random.randint(0,10) for i in range(10)]
-
-pso = PSO(x, y, 0, [1, 1/2], [1, 1], 1)
-pso.solve(100)
+r = [random.random() for i in range(2)]
+pso = PSO(x, y, 0, [1, 1/2], r, 1)
+pso.solve(10)

@@ -56,8 +56,13 @@ class PSO:
     for i in range(len(self.x)):
       self.x[i] = self.x[i] + self.v1[i]
 
+  def showFx(self):
+    fx = [f(x[i]) for i in range(len(self.x))]
+    print(f"f(x) =",fx)
+
   def solve(self, n):
     print(f"x0 : {self.x}")
+    self.showFx()
     for i in range(n):
       print(f"=======================================================")
       self.determineFxi()
@@ -66,10 +71,13 @@ class PSO:
       self.updateV()
       self.updateX()
       print(f"x{i+1} : {self.x}")
+      self.showFx()
     # print(f"f(x) = {f(self.x)}")
 
-x = [random.randint(0,10) for i in range(10)]
+x = [random.randint(-5,5) for i in range(10)]
+r = [random.random() for i in range(2)]
+print(r)
 print(x)
 print("PSO :")
-pso = PSO(x, 0, [1/2, 1], [1/2, 1/2], 1)
+pso = PSO(x, 0, [1/2, 1], r, 1)
 pso.solve(10)
