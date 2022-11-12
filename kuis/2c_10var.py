@@ -61,12 +61,24 @@ class PSO:
       self.x[i] = self.x[i] + self.v1[i]
       self.y[i] = self.y[i] + self.v1y[i]
 
-  def showXandFx(self):
-    xy = [(self.x[i], self.y[i]) for i in range(len(self.x))]
-    print(f"(x,y) = {xy}")
-    fx = [f(self.x[i], self.y[i]) for i in range(len(self.x))]
-    print(f"f(x,y) = {fx}")
+  # def showXandFx(self):
+    # xy = [(self.x[i], self.y[i]) for i in range(len(self.x))]
+    # print(f"(x,y) = {xy}")
+    # fx = [f(self.x[i], self.y[i]) for i in range(len(self.x))]
+    # print(f"f(x,y) = {fx}")
+    
+  def showXandFx(self, i):
+    print(f"x{i+1} : ", end="")
+    for p in range(len(self.x)):
+      print(f"{self.x[p], self.y[p]}", end="")
+      if p == len(self.x) - 1:
+        print()
       
+    print(f"f(x) : ", end="")  
+    for q in range(len(self.x)):
+      print(f"({f(self.x[q], self.y[q])})", end="")
+      if q == len(self.x) - 1:
+        print()
 
   def solve(self, n):
     print(f"r : {self.r}")
@@ -83,8 +95,9 @@ class PSO:
       self.updateV()
       self.updateX()
       
-      self.showXandFx()
+      self.showXandFx(i)
 
+print("PSO 2 variabel 10 (x,y)")
 x = [random.randint(0,10) for i in range(10)]
 y = [random.randint(0,10) for i in range(10)]
 r = [random.random() for i in range(2)]

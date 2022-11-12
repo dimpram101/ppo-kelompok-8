@@ -76,8 +76,8 @@ class PSO:
 
 x = [random.randint(-5,5) for i in range(10)]
 r = [random.random() for i in range(2)]
-print(r)
-print(x)
-print("PSO :")
+print("PSO 10 x0 :")
+print("x :",x)
+print("r :",r)
 pso = PSO(x, 0, [1/2, 1], r, 1)
 pso.solve(10)

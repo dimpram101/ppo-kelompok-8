@@ -68,6 +68,20 @@ class PSO:
       self.x[i] = self.x[i] + self.v1[i]
       self.y[i] = self.y[i] + self.v1y[i]
 
+  def showXandFx(self, i):
+    print(f"x{i+1} : ", end="")
+    for p in range(len(self.x)):
+      print(f"{self.x[p], self.y[p]}", end="")
+      if p == len(self.x) - 1:
+        print()
+      
+    print(f"f(x) : ", end="")  
+    for q in range(len(self.x)):
+      print(f"({f(self.x[q], self.y[q])})", end="")
+      if q == len(self.x) - 1:
+        print()
+    
+
   def solve(self, n):
     print(f"x0 : ", end="")
     for j in range(len(self.x)):
@@ -81,11 +95,9 @@ class PSO:
       self.determinePBest()
       self.updateV()
       self.updateX()
-      print(f"x{i+1} : ", end="")
-      for p in range(len(self.x)):
-        print(f"{self.x[p], self.y[p]}", end="")
-        if p == len(self.x) - 1:
-          print()
+
+      self.showXandFx(i)
+      
 
 pso = PSO([1, 1, 0], [1, -1, 0], 0, [1, 1/2], [1, 1], 1)
 pso.solve(3)

@@ -49,14 +49,15 @@ class SteepestDescent:
   def solve(self, n):
 
     print(f"x0 : ({self.x},{self.y})")
+    print(f"f(x) : {f(self.x, self.y)}")
     for i in range(n):
       print("======================")
       self.determineXYVector()
       self.determineDf()
-      self.updateXY()        
       self.determineT()
+      self.updateXY()        
       print(f"x{i+1} : ({self.x},{self.y})")
       print(f"f(x) : {f(self.x, self.y)}")
 
-std = SteepestDescent(1,1, 1/4)
+std = SteepestDescent(1,1, None)
 std.solve(3)
