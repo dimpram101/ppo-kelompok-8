@@ -74,4 +74,4 @@ class PSO:
 
 print("PSO :")
 pso = PSO([-1, 1.5, 2], 0, [1/2, 1], [1/2, 1/2], 1)
-pso.solve(3)
+pso.solve(10)

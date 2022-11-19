@@ -100,4 +100,4 @@ class PSO:
       
 
 pso = PSO([1, 1, 0], [1, -1, 0], 0, [1, 1/2], [1, 1], 1)
-pso.solve(3)
+pso.solve(10)

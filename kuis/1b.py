@@ -24,4 +24,4 @@ class SteepestDescent:
     
 print("Steepest Descent : ")
 steepest = SteepestDescent(1,1/4)
-steepest.solve(3)
+steepest.solve(10)

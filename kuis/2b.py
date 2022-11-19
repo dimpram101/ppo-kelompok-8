@@ -59,5 +59,6 @@ class SteepestDescent:
       print(f"x{i+1} : ({self.x},{self.y})")
       print(f"f(x) : {f(self.x, self.y)}")
 
+print("Steepest Descent 2 Variabel : ")
 std = SteepestDescent(1,1, None)
-std.solve(3)
+std.solve(10)
