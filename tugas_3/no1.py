@@ -24,8 +24,9 @@ class SimplexMethod:
   def __init__(self, b):
     self.b = b
 
-    print("Kanonik")
-    refreshTable()
+    print("Kanonik", end=", ")
+    self.determineBasics()
+    refreshTableNoR()
     print()
   
   def findMinValue(self):
@@ -35,7 +36,31 @@ class SimplexMethod:
 
     return min(minValue)
   
+  def determineBasics(self):
+    basicIndex = []
+    for x in b:
+      for i in range(len(x[:-2])):
+        if x[i] == 1:
+          basicIndex.append(x.index(x[i]))
+  
+    print("Basic : ", end="")
+    for x in basicIndex:
+      if x == 0:
+        print("z ", end="")
+      elif x == 1:
+        print("x1 ", end="")
+      elif x == 2:
+        print("x2 ", end="")
+      elif x == 3:
+        print("s1 ", end="")
+      elif x == 4: 
+        print("s2 ", end="")
+    print()
+        
+
   def calculateTableau(self):
+    self.determineBasics()
+    refreshTable()
     minValue = self.findMinValue()
     key = 0
     index = 0
@@ -61,6 +86,7 @@ class SimplexMethod:
       minRatio = min(self.b[0][-1], self.b[1][-1])
       key = 0 if minRatio in self.b[0] else 1
     
+    print(f"Kolom Kunci: Kolom-{index+1}, Unsur Kunci: {b[key][index]} (b{index}), Ratio Terkecil: {minRatio}")
     refreshTable()
     self.obd(key,index)
 
@@ -81,6 +107,9 @@ class SimplexMethod:
     for i in range(len(self.b[key])-1):
       self.b[key-2][i] = self.b[key-2][i] - (timesBy*self.b[key][i])
 
+    print()
+    self.clearRatio()
+    self.determineBasics()
     refreshTableNoR()
 
   def clearRatio(self):
