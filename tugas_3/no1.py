@@ -114,20 +114,21 @@ class SimplexMethod:
     self.obd(key,index) #melakukan operasi baris dasar
 
   def obd(self, key, index):
+    x = [0,1,2]
     print("\nOBD")
     div = self.b[key][index] #pembagi unsur kunci menjadi 1
-    print(f"1/{div} * b{key}")
+    print(f"1/{div} * b{x[key]}")
     #membagi seluruh baris unsur kunci
     for i in range(len(self.b[key])-1):
       self.b[key][i] = self.b[key][i]/div
 
     timesBy = self.b[key-1][index] #penentu pembentuk 0
-    print(f"b{key-1} - {timesBy}b{key}")
+    print(f"b{x[key-1]} - {timesBy}b{key}")
     for i in range(len(self.b[key])-1):
       self.b[key-1][i] = self.b[key-1][i] - (timesBy*self.b[key][i])
     
     timesBy = self.b[key-2][index] #penentu pembentuk 0
-    print(f"b{2 if key-2 == -1 else 0} - {timesBy}b{key}")
+    print(f"b{x[key-2]} - {timesBy}b{key}")
     for i in range(len(self.b[key])-1):
       self.b[key-2][i] = self.b[key-2][i] - (timesBy*self.b[key][i])
 
