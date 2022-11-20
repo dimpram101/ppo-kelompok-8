@@ -6,26 +6,61 @@ def z(x1,x2):
 table = PrettyTable()
 
 def refreshTable():
+  basic = determineBasics()
   table.clear()
   table.field_names = ["z", "x1", "x2", "s1", "s2", "rhs", "ratio"]
   for x in b:
     table.add_row(x)
+  
+  table._field_names.insert(0, "Basic")
+  table._align["Basic"] = 'c'
+  table._valign["Basic"] = 't'
+  
+  for i, _ in enumerate(table._rows):
+    table._rows[i].insert(0, basic[i])
   print(table)
 
 def refreshTableNoR():
+  basic = determineBasics()
   table.clear()
   table.field_names = ["z", "x1", "x2", "s1", "s2", "rhs"]
   for x in b:
     table.add_row(x[:-1])
+  table._field_names.insert(0, "Basic")
+  table._align["Basic"] = 'c'
+  table._valign["Basic"] = 't'
+  
+  for i, _ in enumerate(table._rows):
+    table._rows[i].insert(0, basic[i])
   print(table)
 
+def determineBasics():
+  basicIndex = []
+  basic = []
+  for x in b:
+    for i in range(len(x[:-2])):
+      if x[i] == 1:
+        basicIndex.append(x.index(x[i]))
+
+  for x in basicIndex:
+    if x == 0:
+      basic.append("z")
+    elif x == 1:
+      basic.append("x1")
+    elif x == 2:
+      basic.append("x2")
+    elif x == 3:
+      basic.append("s1")
+    elif x == 4: 
+      basic.append("s2")
+
+  return basic
 
 class SimplexMethod:
   def __init__(self, b):
     self.b = b
 
-    print("Kanonik", end=", ")
-    self.determineBasics()
+    print("\033[31mKanonik\033[0m")
     refreshTableNoR()
     print()
   
@@ -34,32 +69,9 @@ class SimplexMethod:
     for x in self.b:
       minValue.append(min(x))
 
-    return min(minValue)
-  
-  def determineBasics(self):
-    basicIndex = []
-    for x in b:
-      for i in range(len(x[:-2])):
-        if x[i] == 1:
-          basicIndex.append(x.index(x[i]))
-  
-    print("Basic : ", end="")
-    for x in basicIndex:
-      if x == 0:
-        print("z ", end="")
-      elif x == 1:
-        print("x1 ", end="")
-      elif x == 2:
-        print("x2 ", end="")
-      elif x == 3:
-        print("s1 ", end="")
-      elif x == 4: 
-        print("s2 ", end="")
-    print()
-        
+    return min(minValue)      
 
   def calculateTableau(self):
-    self.determineBasics()
     refreshTable()
     minValue = self.findMinValue()
     key = 0
@@ -86,12 +98,12 @@ class SimplexMethod:
       minRatio = min(self.b[0][-1], self.b[1][-1])
       key = 0 if minRatio in self.b[0] else 1
     
-    print(f"Kolom Kunci: Kolom-{index+1}, Unsur Kunci: {b[key][index]} (b{index}), Ratio Terkecil: {minRatio}")
+    print(f"\nKolom Kunci: Kolom-{index+1}, Unsur Kunci: {b[key][index]} (b{index}), Ratio Terkecil: {minRatio}")
     refreshTable()
     self.obd(key,index)
 
   def obd(self, key, index):
-    print("OBD")
+    print("\nOBD")
     div = self.b[key][index]
     print(f"1/{div} * b{key}")
     for i in range(len(self.b[key])-1):
@@ -107,9 +119,7 @@ class SimplexMethod:
     for i in range(len(self.b[key])-1):
       self.b[key-2][i] = self.b[key-2][i] - (timesBy*self.b[key][i])
 
-    print()
     self.clearRatio()
-    self.determineBasics()
     refreshTableNoR()
 
   def clearRatio(self):
@@ -121,7 +131,7 @@ class SimplexMethod:
     x1 = x2 = 0
     n = 1
     while True:
-      print(f"Tableau {n}")
+      print(f"\033[31mTableau {n}\033[0m")
       self.calculateTableau()
       print()
 
