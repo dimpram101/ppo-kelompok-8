@@ -109,7 +109,7 @@ class SimplexMethod:
       # menentukan baris ratio terkecil
       key = 0 if minRatio in self.b[0] else 1
     
-    print(f"\nKolom Kunci: Kolom-{index+1}, Unsur Kunci: {b[key][index]} (b{index}), Ratio Terkecil: {minRatio}")
+    print(f"\nKolom Kunci: Kolom-{index+2}, Unsur Kunci: {b[key][index]} (baris basic {determineBasics()[index]}), Ratio Terkecil: {minRatio}")
     refreshTable()
     self.obd(key,index) #melakukan operasi baris dasar
 
@@ -140,6 +140,15 @@ class SimplexMethod:
     for i in range(len(self.b)):
       self.b[i][-1] = 0
 
+  #mengecek apakah tabel kanonik beridentitas 1 untuk z, x1, x2
+  def isKanonikIdentity(self):
+    identity = [False, False, False]
+    for i in range(len(self.b)):
+      for j in range(3):
+        if self.b[i][j] == 1 and (self.b[i-1][j] == 0 and self.b[i-2][j] == 0):
+          identity[j] = True
+    return all(identity)
+
   def solve(self):
     x1 = x2 = 0
     n = 1
@@ -147,7 +156,8 @@ class SimplexMethod:
       print(f"\033[31mTableau {n}\033[0m")
       self.calculateTableau()
       print()
-      if self.b[0][0] == 1 and self.b[1][1] == 1 and self.b[2][2] == 1:
+      # jika tabel kanonik beridentitas 1 untuk z,x1,x2 maka perulangan berhenti
+      if self.isKanonikIdentity():
         x1 = self.b[1][-2]
         x2 = self.b[2][-2]
         break

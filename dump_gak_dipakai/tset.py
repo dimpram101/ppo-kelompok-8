@@ -1,7 +1,7 @@
 from prettytable import PrettyTable
 
 def z(x1,x2):
-  return 100000*x1 + 200000*x2
+  return 8*x1 + 6*x2
 
 table = PrettyTable()
 
@@ -68,7 +68,7 @@ class SimplexMethod:
   # Mencari nilai paling kecil pada kanonik
   def findMinValue(self):
     minValue = []
-    for x in self.b[0:3]:
+    for x in self.b:
       minValue.append(min(x))
 
     return min(minValue)      
@@ -109,25 +109,26 @@ class SimplexMethod:
       # menentukan baris ratio terkecil
       key = 0 if minRatio in self.b[0] else 1
     
-    print(f"\nKolom Kunci: Kolom-{index+2}, Unsur Kunci: {b[key][index]} (b{index}), Ratio Terkecil: {minRatio}")
+    print(f"\nKolom Kunci: Kolom-{index+1}, Unsur Kunci: {b[key][index]} (b{index}), Ratio Terkecil: {minRatio}")
     refreshTable()
     self.obd(key,index) #melakukan operasi baris dasar
 
   def obd(self, key, index):
+    x = [0,1,2]
     print("\nOBD")
     div = self.b[key][index] #pembagi unsur kunci menjadi 1
-    print(f"1/{div} * b{key}")
+    print(f"1/{div} * b{x[key]}")
     #membagi seluruh baris unsur kunci
     for i in range(len(self.b[key])-1):
       self.b[key][i] = self.b[key][i]/div
 
     timesBy = self.b[key-1][index] #penentu pembentuk 0
-    print(f"b{key-1} - {timesBy}b{key}")
+    print(f"b{x[key-1]} - {timesBy}b{key}")
     for i in range(len(self.b[key])-1):
       self.b[key-1][i] = self.b[key-1][i] - (timesBy*self.b[key][i])
     
     timesBy = self.b[key-2][index] #penentu pembentuk 0
-    print(f"b{key-2} - {timesBy}b{key}")
+    print(f"b{x[key-2]} - {timesBy}b{key}")
     for i in range(len(self.b[key])-1):
       self.b[key-2][i] = self.b[key-2][i] - (timesBy*self.b[key][i])
 
@@ -139,6 +140,15 @@ class SimplexMethod:
     for i in range(len(self.b)):
       self.b[i][-1] = 0
 
+  #mengecek apakah tabel kanonik beridentitas 1 untuk z, x1, x2
+  def isKanonikIdentity(self):
+    identity = [False, False, False]
+    for i in range(len(self.b)):
+      for j in range(3):
+        if self.b[i][j] == 1 and (self.b[i-1][j] == 0 and self.b[i-2][j] == 0):
+          identity[j] = True
+    return all(identity)
+
   def solve(self):
     x1 = x2 = 0
     n = 1
@@ -146,7 +156,8 @@ class SimplexMethod:
       print(f"\033[31mTableau {n}\033[0m")
       self.calculateTableau()
       print()
-      if self.b[0][0] == 1 and self.b[1][1] == 1 and self.b[2][2] == 1:
+      # jika tabel kanonik beridentitas 1 untuk z,x1,x2 maka perulangan berhenti
+      if self.isKanonikIdentity():
         x1 = self.b[1][-2]
         x2 = self.b[2][-2]
         break
@@ -156,11 +167,10 @@ class SimplexMethod:
     print(f"x2 = {x2}")
     print(f"Z = {z(x1,x2)}")
  
-
 b = [
-  [1, -100000, -200000, 0, 0, 0, 0],
-  [0, 3, 5, 1, 0, 1200, 0],
-  [0, 1, 1, 0, 1, 300, 0]
+  [1, -2, -3, 0, 0, 0, 0],
+  [0, 2, 1, 1, 0, 4, 0],
+  [0, 1, 2, 0, 1, 5, 0]
 ]
 
 nomor1 = SimplexMethod(b)
