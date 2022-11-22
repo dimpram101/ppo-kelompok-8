@@ -6,32 +6,28 @@ def z(x1,x2):
 table = PrettyTable()
 
 # menampilkan table untuk tableau
-def refreshTable():
-  basic = determineBasics()
+def refreshTable(basics = False, ratios = True):
   table.clear()
   table.field_names = ["z", "x1", "x2", "s1", "s2", "rhs", "ratio"]
   for x in b:
     table.add_row(x)
   
-  table._field_names.insert(0, "Basic")
-  
-  for i, _ in enumerate(table._rows):
-    table._rows[i].insert(0, basic[i])
-  print(table)
+  # Menampilkan table dengan ratio
+  if ratios == False:
+    table.clear()
+    table.field_names = ["z", "x1", "x2", "s1", "s2", "rhs"]
+    for x in b:
+      table.add_row(x[:-1])
 
-# menampilkan table tanpa kolom ratio
-def refreshTableNoR():
-  basic = determineBasics()
-  table.clear()
-  table.field_names = ["z", "x1", "x2", "s1", "s2", "rhs"]
-  for x in b:
-    table.add_row(x[:-1])
-  table._field_names.insert(0, "Basic")
-  table._align["Basic"] = 'c'
-  table._valign["Basic"] = 't'
-  
-  for i, _ in enumerate(table._rows):
-    table._rows[i].insert(0, basic[i])
+  # Menampilkan table dengan basis
+  if basics:
+    basic = determineBasics()
+    table._field_names.insert(0, "Basic")
+    table._align["Basic"] = 'c'
+    table._valign["Basic"] = 't'
+    for i, _ in enumerate(table._rows):
+      table._rows[i].insert(0, basic[i])
+
   print(table)
 
 # menentukan basis dari kanonik
@@ -62,7 +58,7 @@ class SimplexMethod:
     self.b = b
 
     print("\033[31mKanonik\033[0m")
-    refreshTableNoR()
+    refreshTable(ratios=False)
     print()
   
   # Mencari nilai paling kecil pada kanonik
@@ -74,7 +70,7 @@ class SimplexMethod:
     return min(minValue)      
 
   def calculateTableau(self):
-    refreshTable()
+    refreshTable(True,True)
     minValue = self.findMinValue()
     key = 0 #key untuk mencari baris ratio terkecil
     index = 0 #posisi unsur kunci
@@ -110,7 +106,7 @@ class SimplexMethod:
       key = 0 if minRatio in self.b[0] else 1
     
     print(f"\nKolom Kunci: Kolom-{index+2}, Unsur Kunci: {b[key][index]} (baris basic {determineBasics()[index]}), Ratio Terkecil: {minRatio}")
-    refreshTable()
+    refreshTable(True,True)
     self.obd(key,index) #melakukan operasi baris dasar
 
   def obd(self, key, index):
@@ -133,7 +129,7 @@ class SimplexMethod:
       self.b[key-2][i] = self.b[key-2][i] - (timesBy*self.b[key][i])
 
     self.clearRatio()
-    refreshTableNoR()
+    refreshTable(True, False)
 
   #membuat seluruh nilai ratio menjadi 0
   def clearRatio(self):
