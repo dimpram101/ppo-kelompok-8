@@ -73,7 +73,7 @@ class SimplexMethod:
     refreshTable(True,True)
     minValue = self.findMinValue()
     key = 0 #key untuk mencari baris ratio terkecil
-    index = 0 #posisi unsur kunci
+    index = 0 #posisi unsur kunci 
     if minValue in self.b[0]:
       index = self.b[0].index(minValue)
       # menghitung ratio kanonik
@@ -169,6 +169,7 @@ b = [
   [0, 4, 2, 1, 0, 60, 0],
   [0, 2, 4, 0, 1, 48, 0]
 ]
+
 
 nomor1 = SimplexMethod(b)
 nomor1.solve()
