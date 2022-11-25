@@ -1,4 +1,5 @@
 from tabulate import tabulate
+import sympy as sp
 
 def z(x1, x2):
     return 8 * x1 + 6 * x2
@@ -10,97 +11,119 @@ def fb2(x1, x2):
     return 2 * x1 + 4 * x2 >= 48
 
 class Simplex:
-    def __init__(self, z, slack, rhs):
-        self.tab = []
-        self.z = z
-        self.slack = slack
-        self.rhs = rhs
+    def __init__(self):
+        self.M = sp.symbols("M")
+
+        self.tab = [
+            ["Z", 1, -8, -6, 0, 0, self.M, 0, 0],
+            ["S1", 0, 4, 2, 1, 0, 0, 60, 0],
+            ["Y1", 0, 2, 4, 0, -1, 1, 48, 0]
+        ]
+
+        self.headers = ["Basic", "Z", "x1", "x2", "S1", "S2", "Y1", "RHS", "Ratio"]
 
         self.rk = 0
         self.ck = 0
 
-        self.headers = ["z"]
-        for i in range(len(self.z)):
-            self.headers.append(f"x{i + 1}")
-        for j in range(len(self.z)):
-            self.headers.append(f"s{j + 1}")
-        self.headers.append("rhs")
-        self.headers.append("ratio")
+        self.x1 = 0
+        self.x2 = 0
 
     def showTable(self):
         print(tabulate(self.tab, self.headers, tablefmt="grid"))
 
-    def initTableu(self):
-        if(len(self.tab) == 0):
-            tab0 = []
-            tab0.append(1)
-            for j in range(len(self.z)):
-                tab0.append(-1 * self.z[j])
-            for k in range(len(self.z)):
-                tab0.append(0)
-            tab0.append(0)
-            tab0.append(0)
-            self.tab.append(tab0)
-            for i in range(len(self.slack)):
-                tabx = []
-                tabx.append(0)
-                for f in range(len(self.z)):
-                    tabx.append(self.slack[i][f])
-                for h in range(len(self.z)):
-                    tabx.append(0)
-                tabx.append(self.rhs[i])
-                tabx.append(0)
-                self.tab.append(tabx)
-                self.tab[i + 1][len(self.z)+ 1 + i] = 1
-
-        self.columnKey()
-        self.rowKey()
+    def initTableau(self):
+        for i in range(len(self.tab[0][1:])):
+            self.tab[0][i + 1] = self.tab[0][i + 1] - self.M * self.tab[2][i + 1]
+        self.ck = 3
 
     def columnKey(self):
         xTab = []
+        minTab = []
         columnK = 0
         for ma in self.tab:
-            xTab.append(min(ma))
+            minTab.clear()
+            minTab.append(ma[1])
+            minTab.append(ma[2])
+            minTab.append(ma[3])
+            minTab.append(ma[4])
+            minTab.append(ma[5])
+            xTab.append(min(x for x in minTab if x != 0))
         for i in range(len(self.tab)):
             if(min(xTab) in self.tab[i]):
                 columnK = self.tab[i].index(min(xTab))
+        print(xTab)
+        print("min",min(xTab))
+        print(columnK)
         self.ck = columnK
 
     def rowKey(self):
         cTab = []
-        for i in range(len(self.slack)):
+        for i in range(2):
             ratio = self.tab[i + 1][-2] / self.tab[i + 1][self.ck]
             self.tab[i + 1][-1] = ratio
             cTab.append(ratio)
-        self.rk = cTab.index(min(cTab)) + 1
+        self.ratio = min(cTab)
+        self.rk = cTab.index(min(i for i in cTab if i > 0)) + 1
 
     def obd(self):
-        pivot = self.tab[self.ck][self.rk]
-        for i in range(len(self.tab[self.ck]) - 1):
-            self.tab[self.ck][i] = self.tab[self.ck][i] / pivot
-
-        for j in range(len(self.tab) - 1):
-            oper = self.tab[self.ck - j - 1][self.rk]
-            for k in range(len(self.tab[self.ck]) - 1):
-                self.tab[self.ck - j - 1][k] = self.tab[self.ck - j - 1][k] - (oper * self.tab[self.ck][k])
-
-        self.columnKey()
-        self.rowKey()
+        pivot = self.tab[self.rk][self.ck]
+        # self.pivot = pivot
+        for i in range(len(self.tab[self.rk]) - 2):
+            self.tab[self.rk][i + 1] = self.tab[self.rk][i + 1] / pivot
+        if(2 <= self.ck <= 3):
+            self.tab[self.rk][0] = f"x{self.rk}"
+        elif(4 <= self.ck <= 5):
+            self.tab[self.rk][0] = f"S{self.rk + 1}"
+        for j in range(2):
+            oper = self.tab[self.rk - j - 1][self.ck]
+            print(f"b{self.tab.index(self.tab[self.rk - j - 1])} - ({oper} * b{self.rk})")
+            for k in range(len(self.tab[self.rk]) - 2):
+                self.tab[self.rk - j - 1][k + 1] = self.tab[self.rk - j - 1][k + 1] - (oper * self.tab[self.rk][k + 1])
+        for i in range(2):
+            self.tab[i + 1][-1] = 0
 
     def run(self):
-        self.initTableu()
+        print("Metode Simplex")
+        print("\nTableau 1")
         self.showTable()
-        print("")
-        while(True):
-            try:
-                self.obd()
-            except:
-                break
-            self.showTable()
-            print("")
+        self.initTableau()
+        print("\nMembuat Baris Z Konsisten dengan Baris yang lain")
+        self.showTable()
+        self.rowKey()
+        print("\nMencari Ratio")
+        self.showTable()
+        self.obd()
+        print("\nMelakukan Operasi Baris Dasar")
+        self.showTable()
 
-        print(f"Jadi, nilai x1 = {self.tab[1][-2]} dan x2 = {self.tab[2][-2]}.")
-        print(f"Maka nilai maksimum z adalah {z(self.tab[1][-2], self.tab[2][-2])}")
+        print("\nTableau 2")
+        self.columnKey()
+        self.rowKey()
+        self.showTable()
+        print("\nMelakukan Operasi Baris Dasar")
+        self.obd()
+        self.showTable()
 
-pp = Simplex([8,6], [[4, 2], [2, 4]], [60, 48])
+        print("\nTableau 3")
+        self.columnKey()
+        self.rowKey()
+        self.showTable()
+        print("\nMelakukan Operasi Baris Dasar")
+        self.obd()
+        self.showTable()
+
+        for i in range(len(self.tab)):
+            if(self.tab[i][0] == "x1"):
+                self.x1 = self.tab[i][7]
+            elif(self.tab[i][0] == "x2"):
+                self.x2 = self.tab[i][7]
+
+        print(f"Jadi, nilai x1 = {self.x1} dan x2 = {self.x2}.")
+        print(f"Maka nilai maksimum z adalah {self.tab[0][-2]}")
+        print("Pembuktian:")
+        print(f"\tfb1({self.x1}, {self.x2}) = {fb1(self.x1, self.x2)}")
+        print(f"\tfb2({self.x1}, {self.x2}) = {fb2(self.x1, self.x2)}")
+        print(f"\tz({self.x1}, {self.x2}) = {z(self.x1, self.x2)}")
+
+pp = Simplex()
 pp.run()

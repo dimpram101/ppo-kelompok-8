@@ -67,11 +67,13 @@ class SimplexMethod:
     for x in self.b:
       minValue.append(min(x))
 
+    print("MinValue :", min(minValue))
     return min(minValue)      
 
   def calculateTableau(self):
     refreshTable(True,True)
     minValue = self.findMinValue()
+    print(minValue)
     key = 0 #key untuk mencari baris ratio terkecil
     index = 0 #posisi unsur kunci 
     if minValue in self.b[0]:
@@ -169,6 +171,11 @@ b = [
   [0, 4, 2, 1, 0, 60, 0],
   [0, 2, 4, 0, 1, 48, 0]
 ]
+# b = [
+#   [1, -5, -10, 0, 0, 0, 0],
+#   [0, 3, 5, 1, 0, 60, 0],
+#   [0, 4, 4, 0, 1, 72, 0]
+# ]
 
 
 nomor1 = SimplexMethod(b)

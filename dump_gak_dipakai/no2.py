@@ -34,11 +34,11 @@ cheapPoint = findCheapestPoint(distance, notVisited)
 while notVisited:
   print(distance)
   dist = distance[cheapPoint]
-  print(dist)
+  # print(dist)
   destinationDist = graph[cheapPoint]
   for dot in destinationDist:
     if distance[dot] > dist + destinationDist[dot]:
-      distance[dot] = destinationDist[dot]
+      distance[dot] = dist + destinationDist[dot]
       titik[dot] = cheapPoint
 
   notVisited.pop(notVisited.index(cheapPoint))
@@ -50,7 +50,7 @@ i = 0
 while start not in alur:
   alur.append(titik[alur[i]])
   i += 1
-
+print(titik)
 print("distance :", distance)
 print(f"jarak dari {start} ke {end} : {distance[end]}")
 print(f"Alurnya adalah {alur[::-1]}")
