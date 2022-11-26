@@ -7,7 +7,7 @@ graph = {
 }
 
 start = "C"
-end = "E"
+end = "B"
 
 distance = {}
 titik = {}

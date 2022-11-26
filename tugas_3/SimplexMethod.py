@@ -4,24 +4,30 @@ from sympy import *
 def z(x1,x2):
   return 8*x1 + 6*x2
 
-table = PrettyTable()
+def fb1(x1, x2):
+  return 4 * x1 + 2 * x2 <= 60
 
-# menampilkan table untuk tableau
+def fb2(x1, x2):
+    return 2 * x1 + 4 * x2 >= 48
+
+table = PrettyTable()
+testa = ""
+# menampilkan tableau
 def refreshTable(basics = False, ratios = True):
   table.clear()
   table.field_names = ["z", "x1", "x2", "s1", "s2", "Y", "rhs", "ratio"]
   for x in b:
     table.add_row(x)
   
-  # Menampilkan table dengan ratio
+  # Menampilkan tableau dengan ratio
   if ratios == False:
     table.clear()
     table.field_names = ["z", "x1", "x2", "s1", "s2", "Y", "rhs"]
     for x in b:
       table.add_row(x[:-1])
 
-  # Menampilkan table dengan basis
   global basic
+  # Menampilkan tableau dengan basis
   if basics:
     basic = determineBasics()
     table._field_names.insert(0, "Basic")
@@ -32,7 +38,7 @@ def refreshTable(basics = False, ratios = True):
 
   print(table)
 
-# menentukan basis dari kanonik
+# menentukan basis
 def determineBasics():
   basicIndex = []
   basic = []
@@ -60,7 +66,6 @@ def determineBasics():
 class SimplexMethod:
   def __init__(self, b):
     self.b = b
-
     self.x1 = 0
     self.x2 = 0
 
@@ -68,7 +73,7 @@ class SimplexMethod:
     refreshTable(ratios=False)
     print()
   
-  # Mencari nilai paling kecil pada kanonik
+  # Mencari nilai paling kecil pada b0
   def findMinValue(self):
     minValue = []
     minValueIndex = []
@@ -76,7 +81,6 @@ class SimplexMethod:
       if x != 0: 
         minValue.append(str(x))  
         minValueIndex.append(i)
-
     listMinValue = []
     listMinValueIndex = []
     for i, y in enumerate(minValue):
@@ -85,17 +89,14 @@ class SimplexMethod:
         for s in y:
           if s not in ['+', m, '*', 0]:
             newInt += s
-            # print(newInt)
           else:
             break
         listMinValue.append(float(newInt))
         listMinValueIndex.append(minValueIndex[i])
-    
     columnKey = listMinValueIndex[listMinValue.index(min(listMinValue))]
-
     return columnKey
     
-
+  #kalkulasi pada tableau
   def calculateTableau(self):
     refreshTable(True,True)
     print("\nMencari nilai Ratio dan Unsur Kunci")
@@ -108,14 +109,11 @@ class SimplexMethod:
       self.b[2][-1] = self.b[2][-1] / self.b[2][index]
     else:
       print(f"{self.b[2][-2]} / {self.b[2][index]}, penyebut bernilai negatif (Diabaikan)")
-
-    
     key = 2
     minRatio = self.b[2][-1]
     if self.b[1][index] != 0:
       if self.b[1][index] > self.b[2][index]:
         key = 1
-
     rowKey = 1
     minRatio = min(self.b[1][-1], self.b[2][-1])
     if self.b[1][-1] == 0:
@@ -139,12 +137,12 @@ class SimplexMethod:
       self.b[key][i] = self.b[key][i]/div
 
     timesBy = self.b[key-1][index] #penentu pembentuk 0
-    print(f"b{x[key-1]} - {timesBy}b{key}")
+    print(f"b{x[key-1]} - ({timesBy}b{key})")
     for i in range(len(self.b[key])-1):
       self.b[key-1][i] = self.b[key-1][i] - (timesBy*self.b[key][i])
     
     timesBy = self.b[key-2][index] #penentu pembentuk 0
-    print(f"b{x[key-2]} - {timesBy}b{key}")
+    print(f"b{x[key-2]} - ({timesBy}b{key})")
     for i in range(len(self.b[key])-1):
       self.b[key-2][i] = self.b[key-2][i] - (timesBy*self.b[key][i])
 
@@ -156,18 +154,16 @@ class SimplexMethod:
     for i in range(len(self.b)):
       self.b[i][-1] = 0
 
-  #mengecek apakah tabel kanonik beridentitas 1 untuk z, x1, x2
+  #mengecek apakah b0 tidak memiliki nilai negatif
   def b0NoNegative(self):
     negative = True
     minValue = []
     for x in self.b[0][:-2]:
       if x != 0: 
         minValue.append(str(x)) 
-
     for value in minValue:
       if value[0] == '-':
         negative = False
-    
     return negative
 
   def flattenZ(self):
@@ -185,34 +181,26 @@ class SimplexMethod:
         if self.b0NoNegative():
           break
         n += 1
-    
     if 'x1' in basic:
       self.x1 = self.b[1][-2]
     if 'x2' in basic:
       self.x2 = self.b[2][-2]
     print("Didapatkan : ")
-    print(f"x1 = {self.x1}")
-    print(f"x2 = {self.x2}")
-    print(f"Z = {z(self.x1,self.x2)}")
- 
+    print(f"\tx1 = {self.x1}")
+    print(f"\tx2 = {self.x2}")
+    print(f"\tZ = {self.b[0][-2]}")
 
-# b = [
-#   ["Z", 1, -8, -6, 0, 0, m, 0, 0],
-#   ["s1", 0, 4, 2, 1, 0, 0, 60, 0],
-#   ["Y", 0, 2, 4, 0, -1, 1, 48, 0]
-# ]
+    print("Fungsi Batas : ")
+    print(f"\tfb1({self.x1}, {self.x2}) = {fb1(self.x1, self.x2)}")
+    print(f"\tfb2({self.x1}, {self.x2}) = {fb2(self.x1, self.x2)}")
+    print(f"\tz({self.x1}, {self.x2}) = {z(self.x1, self.x2)}")
+ 
 m = Symbol("M")
 b = [
   [1, -8, -6, 0, 0, m, 0, 0],
   [0, 4, 2, 1, 0, 0, 60, 0],
   [0, 2, 4, 0, -1, 1, 48, 0]
 ]
-# b = [
-#   [1, -5, -10, 0, 0, 0, 0],
-#   [0, 3, 5, 1, 0, 60, 0],
-#   [0, 4, 4, 0, 1, 72, 0]
-# ]
 
-print(m)
 nomor1 = SimplexMethod(b)
 nomor1.solve()
